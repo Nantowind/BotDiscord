@@ -53,7 +53,7 @@ public class EventListener extends ListenerAdapter {
             //Eliminar el mensaje que contenía la grosería
             event.getMessage().delete().queue();
         }
-        
+
 
     }
 }

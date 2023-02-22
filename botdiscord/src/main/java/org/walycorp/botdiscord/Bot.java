@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.walycorp.botdiscord.listeners.EventListener;
 
 import javax.security.auth.login.LoginException;
@@ -33,7 +36,9 @@ public class Bot {
 
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(TOKEN);
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT);
-
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.setChunkingFilter(ChunkingFilter.ALL);
+        builder.enableCache(CacheFlag.ONLINE_STATUS,CacheFlag.ACTIVITY);
         // Establece el estado del bot en línea
         builder.setStatus(OnlineStatus.ONLINE);
         // Establece la actividad del bot como "viendo WallyTV"
