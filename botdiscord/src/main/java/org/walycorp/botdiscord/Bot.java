@@ -3,10 +3,14 @@ package org.walycorp.botdiscord;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
+import org.walycorp.botdiscord.listeners.EventListener;
 
 import javax.security.auth.login.LoginException;
+import java.util.Arrays;
+import java.util.List;
 
 public class Bot {
 
@@ -21,19 +25,25 @@ public class Bot {
      * @throws LoginException si no se puede iniciar sesión con el token proporcionado.
      */
     public Bot() throws LoginException {
-        // Cargar las variables de entorno desde el archivo .env
+
         config = Dotenv.configure().load();
         String TOKEN = config.get("TOKEN");
 
-        // Crea un DefaultShardManagerBuilder con el token proporcionado
+
+
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(TOKEN);
+        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT);
+
         // Establece el estado del bot en línea
         builder.setStatus(OnlineStatus.ONLINE);
         // Establece la actividad del bot como "viendo WallyTV"
         builder.setActivity(Activity.watching("WallyTV"));
         // Construye el ShardManager a partir del builder
         shardManager = builder.build();
+        // registrar listeners
+        shardManager.addEventListener(new EventListener());
     }
+
 
     /**
      * Método para obtener la instancia del Dotenv.
