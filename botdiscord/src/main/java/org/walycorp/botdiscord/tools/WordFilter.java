@@ -1,24 +1,18 @@
 package org.walycorp.botdiscord.tools;
 
-import io.github.cdimascio.dotenv.Dotenv;
+
+import org.walycorp.botdiscord.credentials.EnvReader;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class WordFilter {
 
-    private static Dotenv config;
 
-    public WordFilter(Dotenv config) {
-        this.config = config;
-    }
     public static boolean containsWord(String text) {
 
-
-
-        config = Dotenv.configure().load();
-        String USER = config.get("USERDB");
-        String PASS = config.get("PassDB");
+        String USER = EnvReader.OTHER_INFO.get("USERDB");
+        String PASS = EnvReader.OTHER_INFO.get("PASSDB");
 
         ArrayList<String> wordList = new ArrayList<String>();
         // Conexión a la base de datos

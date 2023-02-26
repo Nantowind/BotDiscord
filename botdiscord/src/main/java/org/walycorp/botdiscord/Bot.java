@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.walycorp.botdiscord.commands.CommandManager;
+import org.walycorp.botdiscord.credentials.EnvReader;
 import org.walycorp.botdiscord.listeners.EventListener;
 
 import javax.security.auth.login.LoginException;
@@ -21,7 +22,7 @@ import java.util.List;
 public class Bot {
 
     // La clase Dotenv se utiliza para leer variables de entorno desde un archivo .env
-    private final Dotenv config;
+
     // ShardManager es la clase principal que representa al bot.
     // Contiene todos los eventos y operaciones de Discord API.
     private final ShardManager shardManager;
@@ -32,11 +33,10 @@ public class Bot {
      */
     public Bot() throws LoginException {
 
-        config = Dotenv.configure().load();
-        String TOKEN = config.get("TOKEN");
 
 
-        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(TOKEN);
+
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(EnvReader.OTHER_INFO.get("TOKEN"));
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                 GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT,GatewayIntent.GUILD_PRESENCES);
@@ -58,9 +58,7 @@ public class Bot {
      * Método para obtener la instancia del Dotenv.
      * @return La instancia del Dotenv.
      */
-    public Dotenv getConfig() {
-        return config;
-    }
+
 
     /**
      * Método para obtener la instancia del ShardManager.

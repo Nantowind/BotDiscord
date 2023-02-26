@@ -3,9 +3,6 @@
  */
 package org.walycorp.botdiscord.listeners;
 
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +11,7 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.jetbrains.annotations.NotNull;
+import org.walycorp.botdiscord.credentials.EnvReader;
 import org.walycorp.botdiscord.tools.MessageCleaner;
 import org.walycorp.botdiscord.tools.WordFilter;
 
@@ -35,12 +33,6 @@ public class EventListener extends ListenerAdapter {
      */
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    /**
-     * La lista channelIds es una lista de identificadores de canal de Discord en los que se limpiarán los mensajes.
-     * Estos identificadores son cadenas de caracteres que representan el ID numérico de cada canal.
-     * En este caso, se especifican cuatro canales distintos.
-     */
-    private final List<String> channelIds = Arrays.asList("1077803853665275995", "1075750625016557568", "1076288985657262231", "1076338236458287134");
 
     /**
      * Este método se ejecuta cuando el bot está listo para recibir eventos.
@@ -52,7 +44,7 @@ public class EventListener extends ListenerAdapter {
         // Se obtiene el objeto shardManager que representa al cliente de Discord.
         ShardManager shardManager = event.getJDA().getShardManager();
         // Se itera sobre los identificadores de canal especificados.
-        for (String channelId : channelIds) {
+        for (String channelId : EnvReader.ALL_CHANNEL_IDS) {
             // Se crea un objeto MessageCleaner para cada canal y se programa su ejecución periódica.
             MessageCleaner messageCleaner = new MessageCleaner(shardManager, channelId);
             scheduler.scheduleAtFixedRate(messageCleaner, 0, 30, TimeUnit.MINUTES);
@@ -86,13 +78,19 @@ public class EventListener extends ListenerAdapter {
      */
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        // Se verifica si el mensaje fue enviado por el bot.
+        if (event.getAuthor().getId().equals(EnvReader.ADMIN_IDS.get("IDBOT"))) {
+            return;
+        }
+
         String message = event.getMessage().getContentRaw();
-// Se comprueba si el mensaje contiene alguna palabra grosera utilizando un filtro de palabras.
+        // Se comprueba si el mensaje contiene alguna palabra grosera utilizando un filtro de palabras.
         if (WordFilter.containsWord(message.toLowerCase())) {
             muteUser(event.getMember(), event.getGuild());
             deleteMessage(event);
         }
     }
+
 
     /**
 
@@ -102,13 +100,20 @@ public class EventListener extends ListenerAdapter {
      */
     @Override
     public void onMessageUpdate(@NotNull MessageUpdateEvent event) {
+        // Se verifica si el mensaje fue enviado por el bot.
+        if (event.getAuthor().getId().equals(EnvReader.ADMIN_IDS.get("IDBOT"))) {
+            return;
+        }
+
         String newMessage = event.getMessage().getContentRaw();
-// Se comprueba si el mensaje editado contiene alguna palabra grosera utilizando un filtro de palabras.
+        // Se comprueba si el mensaje editado contiene alguna palabra grosera utilizando un filtro de palabras.
         if (WordFilter.containsWord(newMessage.toLowerCase())) {
             muteUser(event.getMember(), event.getGuild());
             event.getMessage().delete().queue();
         }
     }
+
+
 
     /**
 
@@ -117,7 +122,7 @@ public class EventListener extends ListenerAdapter {
      @param guild El servidor en el que se realizará la acción.
      */
     private void muteUser(Member member, net.dv8tion.jda.api.entities.Guild guild) {
-        Role mutedRole = guild.getRoleById("1077787302404825169");
+        Role mutedRole = guild.getRoleById(EnvReader.ROLE_IDS.get("IDSILENCE"));
         if (mutedRole != null) {
             guild.addRoleToMember(member, mutedRole).queue();
             sendPrivateMessage(member.getUser());

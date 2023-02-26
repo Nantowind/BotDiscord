@@ -1,1 +1,27 @@
-TOKEN=YourTokenHere
+//Token necesario para iniciar tu bot
+TOKEN=xxxxxxxxxxxxxxxxx
+
+//credenciales de base de datos
+USERDB=xxxxxxxxxxxxxxxx
+PASSDB=xxxxxxxxxxxxxxxx
+//id de admins
+IDWALTER=xxxxxxxxxxxxxx
+IDMARCOS=xxxxxxxxxxxxxx
+IDBOT=xxxxxxxxxxxxxxxxx
+
+//id de roles
+IDSILENCE=xxxxxxxxxxxxxx
+IDEXPERTO=xxxxxxxxxxxxxx
+IDNOVATO=xxxxxxxxxxxxxxx
+IDCOLABORADOR=xxxxxxxxxx
+IDMIENBRODESTACADO=xxxxx
+
+//id de los canales
+ADMINCHANNEL=xxxxxxxxxxxxxx
+LOBBYCHANNEL=xxxxxxxxxxxxxx
+TESTINGCHANNEL=xxxxxxxxxxxx
+DEVOPSCHANNEL=xxxxxxxxxxxxx
+
+
+//Texto largos que necesites
+INFOLOBBY= xxxxxxxxxxxxxxx
